@@ -4,10 +4,10 @@ import User from "../models/usersModel";
 import { generateCookie } from "../utils/cookieConfig";
 
 // DESC     Add a new user
-// ROUTE    POST /api/v1/users
+// ROUTE    POST /api/v1/users/sign-up
 // ACCESS   Public
 const addNewUser = asyncHandler(async (req: Request, res: Response) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { email} = req.body;
 
     const duplicate = await User.findOne({ email });
     if (duplicate) {
@@ -28,7 +28,7 @@ const addNewUser = asyncHandler(async (req: Request, res: Response) => {
 });
 
 // DESC     Add a new user
-// ROUTE    POST /api/v1/users
+// ROUTE    POST /api/v1/users/log-in
 // ACCESS   Public
 const logInUser = asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body;

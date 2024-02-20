@@ -20,6 +20,7 @@ const generateCookie = (res: Response, userId: ObjectId) => {
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24,
     });
+    
 };
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
