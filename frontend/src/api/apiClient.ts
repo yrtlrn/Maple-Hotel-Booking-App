@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import { LogInProps } from "../forms/LogInForm";
 import { SignUpProps } from "../forms/SignUpForm";
 
@@ -38,5 +37,16 @@ const logInUser = async (formData: LogInProps) => {
     }
 };
 
+const authToken = async () => {
+    const response = await fetch(`${API_URL}/users/auth-token`, {
+        method: "POST",
+        credentials: "include",
+    });
 
-export { signUpNewUser, logInUser };
+    if (!response.ok) {
+        throw new Error("Invalid Token");
+    }
+    return response.json();
+};
+
+export { signUpNewUser, logInUser, authToken };

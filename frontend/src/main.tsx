@@ -14,6 +14,9 @@ import LogInForm from "./forms/LogInForm.tsx";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AuthLayout from "./layouts/AuthLayout.tsx";
+import { AppContextProvider } from "./context/AppContext.tsx";
+import Test from "./components/Test.tsx";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -31,6 +34,9 @@ const router = createBrowserRouter(
             <Route path="/sign-up" element={<SignUpForm />} />
             <Route path="/log-in" element={<LogInForm />} />
             {/* Private Routes */}
+            <Route path="" element={<AuthLayout />}>
+                <Route path="/test" element={<Test />} />
+            </Route>
         </Route>
     )
 );
@@ -38,8 +44,10 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />
-            <ToastContainer />
+            <AppContextProvider>
+                <RouterProvider router={router} />
+                <ToastContainer />
+            </AppContextProvider>
         </QueryClientProvider>
     </React.StrictMode>
 );

@@ -7,7 +7,7 @@ import { generateCookie } from "../utils/cookieConfig";
 // ROUTE    POST /api/v1/users/sign-up
 // ACCESS   Public
 const addNewUser = asyncHandler(async (req: Request, res: Response) => {
-    const { email} = req.body;
+    const { email } = req.body;
 
     const duplicate = await User.findOne({ email });
     if (duplicate) {
@@ -40,7 +40,6 @@ const logInUser = asyncHandler(async (req: Request, res: Response) => {
         throw new Error("User does not exist");
     }
 
-
     if (await user.checkPassword(password)) {
         generateCookie(res, user._id);
         res.status(200).json({ message: "Login in successful" });
@@ -50,4 +49,11 @@ const logInUser = asyncHandler(async (req: Request, res: Response) => {
     }
 });
 
-export { addNewUser, logInUser };
+// DESC     Verify user with jwt
+// ROUTE    POST /api/v1/users/verify-user
+// ACCESS   private
+const verifyUser = asyncHandler(async (req: Request, res: Response) => {
+    res.status(200).json({ userId: req.userId });
+});
+
+export { addNewUser, logInUser, verifyUser };

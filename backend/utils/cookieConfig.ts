@@ -25,14 +25,14 @@ const generateCookie = (res: Response, userId: ObjectId) => {
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies["authtoken"];
-
+    
     if (!token) {
         res.status(401);
         throw new Error("Unauthorized");
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET_TOKEN!);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY!);
         req.userId = (decoded as JwtPayload).userId;
         next();
     } catch (error) {
@@ -40,5 +40,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
         throw new Error("Unauthorized");
     }
 };
+
+
 
 export { generateCookie, verifyToken };

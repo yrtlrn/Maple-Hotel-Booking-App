@@ -1,5 +1,5 @@
 import express from "express";
-import { addNewUser, logInUser } from "../controller/userController";
+import { addNewUser, logInUser, verifyUser } from "../controller/userController";
 import {
     newUserValidator,
     logInValidator,
@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.post("/sign-up", newUserValidator, addNewUser);
 router.post("/log-in", logInValidator, logInUser);
-router.post("/private", verifyToken, logInUser);
+router.post("/auth-token", verifyToken, verifyUser)
 
 export default router;
