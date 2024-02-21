@@ -9,14 +9,15 @@ import {
     createRoutesFromElements,
 } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout.tsx";
-import SignUpForm from "./forms/SignUpForm.tsx";
-import LogInForm from "./forms/LogInForm.tsx";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthLayout from "./layouts/AuthLayout.tsx";
 import { AppContextProvider } from "./context/AppContext.tsx";
 import Test from "./components/Test.tsx";
+import LogInPage from "./pages/LogInPage.tsx";
+import SignUpPage from "./pages/SignUpPage.tsx";
+
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -31,11 +32,12 @@ const router = createBrowserRouter(
         <Route path="/" element={<MainLayout />}>
             {/* Public Routes */}
             <Route index element={<App />} />
-            <Route path="/sign-up" element={<SignUpForm />} />
-            <Route path="/log-in" element={<LogInForm />} />
+            <Route path="/sign-up" element={<SignUpPage />} />
+            <Route path="/log-in" element={<LogInPage />} />
             {/* Private Routes */}
             <Route path="" element={<AuthLayout />}>
                 <Route path="/test" element={<Test />} />
+                
             </Route>
         </Route>
     )

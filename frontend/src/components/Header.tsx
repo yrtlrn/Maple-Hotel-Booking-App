@@ -1,7 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
+import { useMutation, useQueryClient } from "react-query";
+import * as apiClient from "../api/apiClient";
+import { toast } from "react-toastify";
 
 const Header = () => {
-    // e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    const { isLoggedIn } = useAppContext();
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+
+    const mutation = useMutation(apiClient.logOut, {
+        onSuccess: async () => {
+            await queryClient.invalidateQueries("validateToken");
+            navigate("/");
+            toast("Logout Successful", { type: "success" });
+        },
+        onError: (err: Error) => {
+            toast(err.message, { type: "error" });
+        },
+    });
+
+    const logOutUser = () => {
+        mutation.mutate()
+    }
 
     return (
         <header className="navbar bg-base-300">
@@ -30,15 +51,29 @@ const Header = () => {
                     tabIndex={0}
                     className={`dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-52 `}
                 >
-                    <li>
-                        <Link to="/sign-up">Sign Up</Link>
-                    </li>
-                    <li>
-                        <Link to="/log-in">Log In</Link>
-                    </li>
-                    <li>
-                        <Link to="/">Item 3</Link>
-                    </li>
+                    {isLoggedIn ? (
+                        <>
+                            <li>
+                                <Link to="/user/profile">Profile</Link>
+                            </li>
+                            <li>
+                                <a
+                                    onClick={logOutUser}
+                                >
+                                    Logout
+                                </a>
+                            </li>
+                        </>
+                    ) : (
+                        <>
+                            <li>
+                                <Link to="/sign-up">Sign Up</Link>
+                            </li>
+                            <li>
+                                <Link to="/log-in">Log In</Link>
+                            </li>
+                        </>
+                    )}
                 </ul>
             </div>
         </header>

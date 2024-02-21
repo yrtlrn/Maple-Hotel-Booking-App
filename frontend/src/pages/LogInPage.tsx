@@ -1,6 +1,6 @@
 import { FaEye } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import * as apiClient from "../api/apiClient";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,7 +10,8 @@ export type LogInProps = {
     password: string;
 };
 
-const LogInForm = () => {
+const LogInPage = () => {
+    const queryClient = useQueryClient();
     const navigate = useNavigate();
     const {
         register,
@@ -19,8 +20,9 @@ const LogInForm = () => {
     } = useForm<LogInProps>();
 
     const mutation = useMutation(apiClient.logInUser, {
-        onSuccess: () => {
+        onSuccess: async () => {
             toast("Log In Successful", { type: "success" });
+            await queryClient.invalidateQueries("validateToken");
             navigate("/");
         },
         onError: (err: Error) => {
@@ -109,4 +111,4 @@ const LogInForm = () => {
         </form>
     );
 };
-export default LogInForm;
+export default LogInPage;

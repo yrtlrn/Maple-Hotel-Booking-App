@@ -1,5 +1,5 @@
-import { LogInProps } from "../forms/LogInForm";
-import { SignUpProps } from "../forms/SignUpForm";
+import { LogInProps } from "../pages/LogInPage";
+import { SignUpProps } from "../forms/UserForm";
 
 const API_URL = "http://localhost:3000/api/v1";
 
@@ -46,7 +46,18 @@ const authToken = async () => {
     if (!response.ok) {
         throw new Error("Invalid Token");
     }
-    return response.json();
+    
 };
 
-export { signUpNewUser, logInUser, authToken };
+const logOut = async () => {
+    const response = await fetch(`${API_URL}/users/log-out`, {
+        method: "POST",
+        credentials: "include"
+    });
+
+    if (!response.ok) {
+        throw new Error("Could not log out")
+    }
+}
+
+export { signUpNewUser, logInUser, authToken, logOut };

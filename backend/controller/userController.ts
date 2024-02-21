@@ -56,4 +56,15 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
     res.status(200).json({ userId: req.userId });
 });
 
-export { addNewUser, logInUser, verifyUser };
+// DESC     Verify user with jwt
+// ROUTE    POST /api/v1/users/log-out
+// ACCESS   private
+const logOutUser = asyncHandler(async (req: Request, res: Response) => {
+    res.cookie("authtoken", "", {
+        expires: new Date(0)
+    })
+    res.status(200).json({message: 'User Logged Out Successful'})
+})
+
+
+export { addNewUser, logInUser, verifyUser, logOutUser };
