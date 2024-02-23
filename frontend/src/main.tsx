@@ -14,10 +14,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthLayout from "./layouts/AuthLayout.tsx";
 import { AppContextProvider } from "./context/AppContext.tsx";
-import Test from "./components/Test.tsx";
+
 import LogInPage from "./pages/LogInPage.tsx";
 import SignUpPage from "./pages/SignUpPage.tsx";
-
+import AddHotelPage from "./pages/AddHotelPage.tsx";
+import EditProfilePage from "./pages/EditProfilePage.tsx";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -36,8 +37,8 @@ const router = createBrowserRouter(
             <Route path="/log-in" element={<LogInPage />} />
             {/* Private Routes */}
             <Route path="" element={<AuthLayout />}>
-                <Route path="/test" element={<Test />} />
-                
+                <Route path="/add-hotel" element={<AddHotelPage />} />
+                <Route path="/edit-profile" element={<EditProfilePage />} />
             </Route>
         </Route>
     )

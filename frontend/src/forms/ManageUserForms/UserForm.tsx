@@ -1,47 +1,41 @@
 import { FaEye } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "react-query";
-import * as apiClient from "../api/apiClient";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { UserProps } from "../../../../backend/shared/types";
 
-export type SignUpProps = {
+
+type ReturnedUser = {
     firstName: string;
     lastName: string;
     email: string;
-    password: string;
-    confirmPassword: string;
 };
 
-const UserForm = () => {
-    const queryClient = useQueryClient()
-    const navigate = useNavigate();
+export type UserFormProps = {
+    type: string;
+    onSave: (userData: UserProps) => void;
+    user?: ReturnedUser;
+};
+
+const UserForm = ({ type, onSave, user }: UserFormProps) => {
     const {
         register,
         watch,
         handleSubmit,
         formState: { errors },
-    } = useForm<SignUpProps>();
-
-    const mutation = useMutation(apiClient.signUpNewUser, {
-        onSuccess: async () => {
-            toast("Sign Up Successful", { type: "success" });
-            await queryClient.invalidateQueries("validateToken")
-            navigate("/");
-        },
-        onError: (err: Error) => {
-            toast("Sign Up Failed", { type: "error" });
-            toast(err.message, { type: "error" });
-        },
-    });
+        reset,
+    } = useForm<UserProps>();
 
     const onSubmit = handleSubmit((data) => {
-        mutation.mutate(data);
+        onSave(data);
     });
 
+    useEffect(() => {
+        reset(user);
+    }, [user, reset]);
+
     const changePasswordVisibility = (
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+        e: React.MouseEvent<SVGElement, MouseEvent>
     ) => {
         e.preventDefault();
         const elem = document.getElementById(
@@ -56,7 +50,7 @@ const UserForm = () => {
     };
 
     const changeConfirmPasswordVisibility = (
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+        e: React.MouseEvent<SVGElement, MouseEvent>
     ) => {
         e.preventDefault();
         const elem = document.getElementById(
@@ -136,7 +130,9 @@ const UserForm = () => {
                 </section>
                 <section className="w-full">
                     <div className="label">
-                        <span className="label-text text-xl">Password</span>
+                        <span className="label-text text-xl">
+                            {type === "Edit" ? "Current Password" : "Password"}
+                        </span>
                     </div>
                     <div className="flex relative justify-end items-center">
                         <input
@@ -153,11 +149,10 @@ const UserForm = () => {
                             })}
                         />
                         <span className="absolute mr-2 flex">
-                            <button
+                            <FaEye
+                                size={20}
                                 onClick={(e) => changePasswordVisibility(e)}
-                            >
-                                <FaEye size={20} />
-                            </button>
+                            />
                         </span>
                     </div>
                     {errors.password && (
@@ -169,7 +164,9 @@ const UserForm = () => {
                 <section className="w-full">
                     <div className="label">
                         <span className="label-text text-xl">
-                            Confirm Password
+                            {type === "Edit"
+                                ? "New Password"
+                                : "Confirm Password"}
                         </span>
                     </div>
                     <div className="flex relative justify-end items-center">
@@ -179,22 +176,24 @@ const UserForm = () => {
                             id="confirmPassword"
                             {...register("confirmPassword", {
                                 validate: (val) => {
-                                    if (!val) {
+                                    if (!val && type !== "Edit") {
                                         return "This field is required";
-                                    } else if (watch("password") !== val) {
+                                    } else if (
+                                        watch("password") !== val &&
+                                        type !== "Edit"
+                                    ) {
                                         return "The passwords do not match";
                                     }
                                 },
                             })}
                         />
                         <span className="absolute mr-2 flex">
-                            <button
+                            <FaEye
+                                size={20}
                                 onClick={(e) =>
                                     changeConfirmPasswordVisibility(e)
                                 }
-                            >
-                                <FaEye size={20} />
-                            </button>
+                            />
                         </span>
                     </div>
                     {errors.confirmPassword && (
@@ -204,9 +203,14 @@ const UserForm = () => {
                     )}
                 </section>
                 <button className={`btn text-2xl px-2 border border-white`}>
-                    Sign Up
+                    {type}
                 </button>
-                <aside className="text-center text-md">Already have an Account? <Link to="/log-in" className="underline">Log In</Link></aside>
+                <aside className="text-center text-md">
+                    Already have an Account?{" "}
+                    <Link to="/log-in" className="underline">
+                        Log In
+                    </Link>
+                </aside>
             </label>
         </form>
     );

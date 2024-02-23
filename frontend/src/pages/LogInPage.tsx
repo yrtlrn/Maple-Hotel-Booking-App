@@ -36,7 +36,7 @@ const LogInPage = () => {
     });
 
     const changePasswordVisibility = (
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+        e: React.MouseEvent<SVGElement, MouseEvent>
     ) => {
         e.preventDefault();
         const elem = document.getElementById(
@@ -85,11 +85,9 @@ const LogInPage = () => {
                             })}
                         />
                         <span className="absolute mr-2">
-                            <button
+                            <FaEye
                                 onClick={(e) => changePasswordVisibility(e)}
-                            >
-                                <FaEye />
-                            </button>
+                            />
                         </span>
                     </div>
                     {errors.password && (

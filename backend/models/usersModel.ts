@@ -7,15 +7,15 @@ export interface UserType {
     lastName: string;
     email: string;
     password: string;
-};
-
-interface UserMethods {
-    checkPassword(password: string): boolean
 }
 
-type UserModel = Model<UserType,{},UserMethods>
+interface UserMethods {
+    checkPassword(password: string): boolean;
+}
 
-const userSchema = new mongoose.Schema<UserType,UserModel,UserMethods>({
+type UserModel = Model<UserType, {}, UserMethods>;
+
+const userSchema = new mongoose.Schema<UserType, UserModel, UserMethods>({
     firstName: {
         type: String,
         minlength: 3,
@@ -46,13 +46,20 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
+userSchema.pre("findOneAndUpdate", async function (next) {
+    const data = JSON.parse(JSON.stringify(this.getUpdate()));
+    if (data.password) {
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+        this.set({ password: hashedPassword });
+    }
+    next();
+});
+
 userSchema.method(
     "checkPassword",
     async function checkPassword(password: string) {
-        const check:boolean = await bcrypt.compare(password,this.password)
-        if (check) {
-            return check
-        }
+        const check: boolean = await bcrypt.compare(password, this.password);
+        return check;
     }
 );
 
